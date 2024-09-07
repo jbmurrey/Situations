@@ -5,21 +5,28 @@ namespace Situations
 {
     public class SituationsContainer<SituationEnum> : ISituationsContainer<SituationEnum> where SituationEnum : Enum
     {
-        private readonly IEnumerable<IRegisteredSituation<SituationEnum>> _situationRegistrations;
-        private readonly IEnumerable<IRegisteredInstance> _registeredInstances;
+        private readonly Registrations<SituationEnum> _registrations;
 
-        internal SituationsContainer(IEnumerable<IRegisteredSituation<SituationEnum>> situationConditions, IEnumerable<IRegisteredInstance> registeredInstances)
+        internal SituationsContainer(Registrations<SituationEnum> registrations)
         {
-            _situationRegistrations = situationConditions;
-            _registeredInstances = registeredInstances;
+            _registrations = registrations;
         }
 
         public IConfiguredService<T, SituationEnum> GetConfiguredService<T>() where T : class
         {
-            var instanceProvider = new InstanceProvider<SituationEnum>(new MoqInstanceProvider<SituationEnum>(_registeredInstances), _situationRegistrations);
-            var instance = (T)instanceProvider.GetInstance(typeof(T));
+            var mockInstanceProvider = new MoqInstanceProvider(_registrations.RegisteredInstances);
+            var constructorProvider = new DefaultConstructorProvider(new MoqConstructorProvider(_registrations.RegisteredConstructors));
+            var instanceProvider = new InstanceProvider(mockInstanceProvider, constructorProvider, new DefaultParameterProvider(mockInstanceProvider, _registrations.RegisteredInstances, constructorProvider));
+            var tryGetInstanceResult = instanceProvider.TryGetInstance(typeof(T));
 
-            return new ConfiguredService<T, SituationEnum>(instance, _situationRegistrations);
+            if (tryGetInstanceResult.IsFailure)
+            {
+                throw tryGetInstanceResult.Exception!;
+            }
+
+            var instance = (T)tryGetInstanceResult.Data!;
+
+            return new ConfiguredService<T, SituationEnum>(instance, _registrations.RegisteredSituations);
         }
     }
 }

@@ -6,23 +6,23 @@ namespace Situations.Core
         where TService : class
         where SituationEnum : Enum
     {
-        private readonly IEnumerable<IRegisteredSituation<SituationEnum>> _situations;
+        Dictionary<SituationEnum, IRegisteredSituation<SituationEnum>> _situations;
 
-        public ConfiguredService(TService instance, IEnumerable<IRegisteredSituation<SituationEnum>> situations)
+        public ConfiguredService(TService instance, Dictionary<SituationEnum, IRegisteredSituation<SituationEnum>> situations)
         {
-            Instance = instance;
+            Service = instance;
             _situations = situations;
         }
 
-        public TService Instance { get; }
+        public TService Service { get; }
 
-        public void Capture(SituationEnum situationEnum)
+        public void InvokeSituation(SituationEnum situationEnum)
         {
             IRegisteredSituation<SituationEnum> situation;
 
             try
             {
-                situation = _situations.First(x => x.Situation.Equals(situationEnum));
+                situation = _situations[situationEnum];
             }
             catch (Exception ex)
             {
@@ -34,7 +34,7 @@ namespace Situations.Core
 
         public static implicit operator TService(ConfiguredService<TService, SituationEnum> instance)
         {
-            return instance.Instance;
+            return instance.Service;
         }
     }
 }

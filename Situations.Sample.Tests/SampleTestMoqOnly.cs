@@ -13,7 +13,7 @@ namespace Situations.Sample.Tests
         [TestInitialize]
         public void Init()
         {
-          //  employeeCreationService = new EmployeeCreationService(_mockEmployeeService.Object, _mockPositionRepository.Object, _mockNotificationService.Object);
+            //employeeCreationService = new EmployeeCreationService(_mockEmployeeService.Object, _mockPositionRepository.Object, _mockNotificationService.Object);
         }
 
         [TestMethod]
@@ -34,10 +34,7 @@ namespace Situations.Sample.Tests
         public void AddEmployee_GivenRequestIsManagerAndEmployeeTryingToBeAddedDoesExist_EmployeeWasAdded()
         {
             //Arrange
-
-
             //Act
-
             //Assert
 
         }
@@ -46,11 +43,7 @@ namespace Situations.Sample.Tests
         public void AddEmployee_GivenRequestIsNotManager_NotifyManager()
         {
             //Arrange
-
-
             //Act
-
-
             //Assert
         }
 

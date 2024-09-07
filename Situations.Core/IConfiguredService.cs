@@ -4,7 +4,7 @@
         where TService : class
         where SituationEnum : Enum
     {
-        public TService Instance { get; }
-        void Capture(SituationEnum situationEnum);
+        public TService Service { get; }
+        void InvokeSituation(SituationEnum situationEnum);
     }
 }

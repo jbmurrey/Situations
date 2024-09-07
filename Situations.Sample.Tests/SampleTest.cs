@@ -18,42 +18,42 @@ namespace Situations.Sample.Tests
         public void AddEmployee_GivenRequestIsManagerAndEmployeeTryingToBeAddedDoesNotExist_EmployeeWasAdded()
         {
             //Arrange
-            _configuredService.Capture(EmployeeCreationSituations.RequestorIsManager);
-            _configuredService.Capture(EmployeeCreationSituations.EmployeeTryingToAddedDoesNotExist);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.RequestorIsManager);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.EmployeeTryingToAddedDoesNotExist);
 
             //Act
-            _configuredService.Instance.AddEmployee(TestingConstants.ManagerId, TestingConstants.Employee);
+            _configuredService.Service.AddEmployee(TestingConstants.ManagerId, TestingConstants.Employee);
 
             //Assert
-            _configuredService.Capture(EmployeeCreationSituations.EmployeeWasAdded);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.EmployeeWasAdded);
         }
 
         [TestMethod]
         public void AddEmployee_GivenRequestIsManagerAndEmployeeTryingToBeAddedDoesExist_EmployeeWasAdded()
         {
             //Arrange
-            _configuredService.Capture(EmployeeCreationSituations.RequestorIsManager);
-            _configuredService.Capture(EmployeeCreationSituations.EmployeeTryingToBeAddedAlreadyExist);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.RequestorIsManager);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.EmployeeTryingToBeAddedExist);
 
             //Act
-            _configuredService.Instance.AddEmployee(TestingConstants.ManagerId, TestingConstants.Employee);
+            _configuredService.Service.AddEmployee(TestingConstants.ManagerId, TestingConstants.Employee);
 
             //Assert
-            _configuredService.Capture(EmployeeCreationSituations.EmployeeWasNotAdded);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.EmployeeWasNotAdded);
         }
 
         [TestMethod]
         public void AddEmployee_GivenRequestIsNotManager_NotifyManager()
         {
             //Arrange
-            _configuredService.Capture(EmployeeCreationSituations.RequesterIsNotManager);
-            _configuredService.Capture(EmployeeCreationSituations.ManagerOfEmployeeIsFound);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.RequesterIsNotManager);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.ManagerOfEmployeeIsFound);
 
             //Act
-            _configuredService.Instance.AddEmployee(TestingConstants.EmployeeId, TestingConstants.Employee);
+            _configuredService.Service.AddEmployee(TestingConstants.EmployeeId, TestingConstants.Employee);
 
             //Assert
-            _configuredService.Capture(EmployeeCreationSituations.ManagerWasNotified);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.ManagerWasNotified);
         }
 
 
@@ -61,13 +61,13 @@ namespace Situations.Sample.Tests
         public void AddEmployee_GivenRequestIsManager_MangerWasNotNotified()
         {
             //Arrange
-            _configuredService.Capture(EmployeeCreationSituations.RequestorIsManager);
-            _configuredService.Capture(EmployeeCreationSituations.ManagerOfEmployeeIsFound);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.RequestorIsManager);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.ManagerOfEmployeeIsFound);
             //Act
-            _configuredService.Instance.AddEmployee(TestingConstants.ManagerId, TestingConstants.Employee);
+            _configuredService.Service.AddEmployee(TestingConstants.ManagerId, TestingConstants.Employee);
 
             //Assert
-            _configuredService.Capture(EmployeeCreationSituations.ManagerWasNotNotified);
+            _configuredService.InvokeSituation(EmployeeCreationSituations.ManagerWasNotNotified);
         }
 
     }

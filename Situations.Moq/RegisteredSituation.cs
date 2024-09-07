@@ -7,7 +7,7 @@ namespace Situations.Moq
         where SituationEnum : Enum
         where Service : class
     {
-        private event EventHandler? _actionsToCapture;
+        private event EventHandler<Action<Mock<Service>>>? _actionsToCapture;
 
         public RegisteredSituation(SituationEnum situation, Mock<Service> registeredService)
         {
@@ -20,7 +20,7 @@ namespace Situations.Moq
         public object Instance => Mock.Object;
         internal Mock<Service> Mock;
 
-        public RegisteredSituation<SituationEnum, Service> OnCapture(Action<Mock<Service>> action)
+        public RegisteredSituation<SituationEnum, Service> OnInvocation(Action<Mock<Service>> action)
         {
             _actionsToCapture += (sender, args) => action(Mock);
             return this;
@@ -28,7 +28,7 @@ namespace Situations.Moq
 
         public void Capture()
         {
-            _actionsToCapture?.Invoke(this, EventArgs.Empty);
+            _actionsToCapture?.Invoke(this, null!);
         }
     }
 }

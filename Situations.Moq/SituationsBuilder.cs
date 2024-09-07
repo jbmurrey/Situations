@@ -1,41 +1,35 @@
-﻿using Moq;
-using Situations.Core;
+﻿using Situations.Core;
 using Situations.Moq;
+using System.Reflection;
 
 namespace Situations
 {
     public class SituationsBuilder<SituationEnum> where SituationEnum : Enum
     {
-        private readonly List<IRegisteredSituation<SituationEnum>> _registeredSituations = new();
-        private readonly List<IRegisteredInstance> _registeredInstanceProviders = new();
+        private readonly Registrations<SituationEnum> _registrations = new();
+
         public RegisteredSituation<SituationEnum, TService> RegisterSituation<TService>(SituationEnum situation)
             where TService : class
         {
-            RegisteredSituation<SituationEnum, TService> situationRegistration;
+            var sitatuion = new RegisteredSituation<SituationEnum, TService>(situation, MockSingletonFactory<TService>.Instance);
+            _registrations.RegisteredSituations[situation] = sitatuion;
 
-            var existingRegisteredServiceTypes = _registeredSituations.Where(x => x.RegistrationType == typeof(TService));
-
-            if (existingRegisteredServiceTypes.Any() && existingRegisteredServiceTypes.First() is RegisteredSituation<SituationEnum, TService> existingSituationRegistration)
-            {
-                situationRegistration = new RegisteredSituation<SituationEnum, TService>(situation, existingSituationRegistration.Mock);
-            }
-            else
-            {
-                situationRegistration = new RegisteredSituation<SituationEnum, TService>(situation, new Mock<TService>());
-            }
-
-            _registeredSituations.Add(situationRegistration);
-            return situationRegistration;
+            return sitatuion;
         }
 
-        public void RegisterInstance<TImplementation, TService>(Func<TService> instanceResolver) where TImplementation : TService
+        public void RegisterInstance<TImplementation, TService>(Func<TService> instanceResolver)
         {
-            _registeredInstanceProviders.Add(new RegisteredInstance(() => instanceResolver()!, typeof(TService)));
+            _registrations.RegisteredInstances[typeof(TService)] = () => instanceResolver()!;
+        }
+
+        public void RegisterConstructor<TService>(Func<Type, ConstructorInfo> constructorResolver)
+        {
+            _registrations.RegisteredConstructors[typeof(TService)] = constructorResolver;
         }
 
         public ISituationsContainer<SituationEnum> Build()
         {
-            return new SituationsContainer<SituationEnum>(_registeredSituations, _registeredInstanceProviders);
+            return new SituationsContainer<SituationEnum>(_registrations);
         }
     }
 }

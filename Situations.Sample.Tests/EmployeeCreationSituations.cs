@@ -4,7 +4,7 @@
     {
         RequestorIsManager,
         RequesterIsNotManager,
-        EmployeeTryingToBeAddedAlreadyExist,
+        EmployeeTryingToBeAddedExist,
         EmployeeTryingToAddedDoesNotExist,
         EmployeeWasAdded,
         EmployeeWasNotAdded,

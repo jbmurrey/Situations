@@ -1,65 +1,49 @@
-﻿using System.Reflection;
+﻿using Situations.Core.Exceptions;
 
 namespace Situations.Core
 {
-    public class InstanceProvider<SituationEnum> : IInstanceProvider<SituationEnum> where SituationEnum : Enum
+    public class InstanceProvider : IInstanceProvider
     {
-        private readonly IInstanceProvider<SituationEnum> _innerHandler;
-        private readonly IEnumerable<IRegisteredSituation<SituationEnum>> _situationRegistrations;
+        private readonly IInstanceProvider _innerHandler;
+        private readonly IConstructorProvider _constructorProvider;
+        private readonly IParameterProvider _parameterProvider;
 
-        public InstanceProvider(IInstanceProvider<SituationEnum> innerHandler, IEnumerable<IRegisteredSituation<SituationEnum>> situationRegistrations)
+        public InstanceProvider(IInstanceProvider innerHandler, IConstructorProvider constructorProvider, IParameterProvider parameterProvider)
         {
             _innerHandler = innerHandler;
-            _situationRegistrations = situationRegistrations;
+            _constructorProvider = constructorProvider;
+            _parameterProvider = parameterProvider;
         }
 
-        public object GetInstance(Type instanceType)
+        public Result<object> TryGetInstance(Type instanceType)
         {
-            var constructors = instanceType.GetConstructors();
-            var constructorParameters = constructors[0].GetParameters();
-
-            var situationDictionary =
-                _situationRegistrations
-                .DistinctBy(x => x.RegistrationType)
-                .ToDictionary(x => x.RegistrationType.Name, x => x.Instance);
-
-            var parameters = GetParameters(_situationRegistrations, constructorParameters, situationDictionary);
-
-            return constructors[0].Invoke(parameters);
-        }
-
-        private object GetInstance(Type instanceType, IEnumerable<IRegisteredSituation<SituationEnum>> situations, Dictionary<string, object> situationsDictionary)
-        {
-            var constructors = instanceType.GetConstructors();
-            var constructorParameters = constructors.Length == 0 ? null : constructors[0].GetParameters();
-
-            if (constructors.Length == 0 || constructorParameters!.Length == 0)
+            try
             {
-                return _innerHandler.GetInstance(instanceType);
-            }
+                var innerHandlerInstanceResult = _innerHandler.TryGetInstance(instanceType);
 
-            var parameters = GetParameters(situations, constructorParameters!, situationsDictionary);
-
-            return constructors[0].Invoke(parameters.ToArray());
-        }
-
-        private object[] GetParameters(IEnumerable<IRegisteredSituation<SituationEnum>> situations, ParameterInfo[] constructorParameters, Dictionary<string, object> situationDictionary)
-        {
-            var parameters = new List<object>();
-
-            foreach (var constructorParameter in constructorParameters)
-            {
-                if (situationDictionary.TryGetValue(constructorParameter.ParameterType.Name, out var instance))
+                if (innerHandlerInstanceResult.IsSuccess)
                 {
-                    parameters.Add(instance);
+                    return innerHandlerInstanceResult;
                 }
-                else
+
+                var canGetConstructor = _constructorProvider.TryGetConstructorInfo(instanceType, out var constructorInfo);
+
+                if (!canGetConstructor)
                 {
-                    parameters.Add(GetInstance(constructorParameter.ParameterType, situations, situationDictionary));
+                    return Result<object>.Failure(new NoSuitableConstructorException($"No suitable constructor found for type {instanceType}"));
+                }
+
+                var parameters = constructorInfo!.GetParameters();
+                var parameterInstances = _parameterProvider.GetParameters(constructorInfo).ToArray();
+
+                return Result<object>.Success(constructorInfo!.Invoke(parameterInstances));
+            }
+            catch (Exception ex)
+            {
+                {
+                    return Result<object>.Failure(ex);
                 }
             }
-
-            return parameters.ToArray();
         }
     }
 }

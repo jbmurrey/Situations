@@ -1,32 +1,34 @@
 ﻿using Moq;
 using Situations.Core;
+using Situations.Core.Exceptions;
 
 namespace Situations.Moq
 {
-    internal class MoqInstanceProvider<SituationEnum> : IInstanceProvider<SituationEnum> where SituationEnum : Enum
+    internal class MoqInstanceProvider : IInstanceProvider
     {
         private readonly Dictionary<Type, Func<object>> _registeredInstances;
 
-        public MoqInstanceProvider(IEnumerable<IRegisteredInstance> registeredInstances)
+        public MoqInstanceProvider(Dictionary<Type, Func<object>> registeredInstances)
         {
-            _registeredInstances = registeredInstances
-                .Reverse()
-                .DistinctBy(x => x.RegisteredType)
-                .ToDictionary(x => x.RegisteredType, x => x.InstanceResolver);
+            _registeredInstances = registeredInstances;
         }
 
-        public object GetInstance(Type instanceType)
+        public Result<object> TryGetInstance(Type instanceType)
         {
-
             if (_registeredInstances.TryGetValue(instanceType, out var instanceResolver))
             {
-                return instanceResolver();
+                return Result<object>.Success(instanceResolver());
             }
 
-            var mockType = typeof(Mock<>).MakeGenericType(instanceType);
-            dynamic mockObject = Activator.CreateInstance(mockType)!;
+            if (instanceType.IsAbstract || instanceType.IsInterface)
+            {
+                var mockType = typeof(Mock<>).MakeGenericType(instanceType);
+                dynamic mockObject = Activator.CreateInstance(mockType)!;
 
-            return mockObject.Object;
+                return Result<object>.Success(mockObject.Object);
+            }
+
+            return Result<object>.Failure(new UnregisteredInstanceException($"No registered Instance found for type {instanceType}  "));
         }
     }
 }

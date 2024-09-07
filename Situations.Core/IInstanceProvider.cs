@@ -1,7 +1,7 @@
 ﻿namespace Situations.Core
 {
-    public interface IInstanceProvider<SituationEnum> where SituationEnum : Enum
+    public interface IInstanceProvider
     {
-        object GetInstance(Type instanceType);
+        Result<object> TryGetInstance(Type instanceType);
     }
 }

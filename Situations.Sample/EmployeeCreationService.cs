@@ -6,13 +6,24 @@
         private readonly IPositionRepository _positionRepository;
         private readonly INotificationService _notificationService;
         private readonly ILoggingService _loggingService;
+        private readonly MultipleConstructorParameterClass _multipleConstructorParameterClass;
 
-        public EmployeeCreationService(IEmployeeService service, IPositionRepository positionRepository, INotificationService notificationService, ILoggingService loggingService)
+        public EmployeeCreationService(IEmployeeService employeeService, IPositionRepository positionRepository, INotificationService notificationService, ILoggingService loggingService, MultipleConstructorParameterClass multiParamClass)
         {
-            _employeeService = service;
+            _employeeService = employeeService;
+            _positionRepository = positionRepository;
+            _notificationService = notificationService;
+            _multipleConstructorParameterClass = multiParamClass;
+            _loggingService = loggingService;
+        }
+
+        public EmployeeCreationService(EmployeeService employeeService, IPositionRepository positionRepository, INotificationService notificationService, ILoggingService loggingService, MultipleConstructorParameterClass multiParamClass)
+        {
+            _employeeService = employeeService;
             _positionRepository = positionRepository;
             _notificationService = notificationService;
             _loggingService = loggingService;
+            _multipleConstructorParameterClass = multiParamClass;
         }
 
         public void AddEmployee(int requestUserId, Employee employee)
