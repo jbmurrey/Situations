@@ -38,7 +38,7 @@ namespace Situations.Sample.Tests
                 .RegisterSituation<IPositionRepository>(EmployeeCreationSituations.ManagerOfEmployeeIsFound)
                 .OnInvocation(mock => mock.Setup(x => x.GetManagerOf(TestingConstants.EmployeeId)).Returns(TestingConstants.ManagerId));
 
-            //
+           
             //builder.RegisterInstance<EmployeeService, IEmployeeService>(() => new EmployeeService());
             //builder.RegisterConstructor<EmployeeCreationService>(x => x.GetConstructors()[1]);
 

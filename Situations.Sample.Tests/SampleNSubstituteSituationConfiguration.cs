@@ -30,18 +30,18 @@ namespace Situations.Sample.Tests
                 .OnInvocation(x => x.Received().AddEmployee(TestingConstants.Employee));
             builder
                 .RegisterSituation<IEmployeeService>(EmployeeCreationSituations.EmployeeWasNotAdded)
-                .OnInvocation(x => x.Received().AddEmployee(TestingConstants.Employee));
+                .OnInvocation(x => x.DidNotReceive().AddEmployee(TestingConstants.Employee));
             builder
                 .RegisterSituation<INotificationService>(EmployeeCreationSituations.ManagerWasNotified)
-                .OnInvocation(x => x.Received().Notify(TestingConstants.ManagerId, It.IsAny<string>()));
+                .OnInvocation(x => x.Received().Notify(TestingConstants.ManagerId, Arg.Any<string>()));
             builder
                 .RegisterSituation<INotificationService>(EmployeeCreationSituations.ManagerWasNotNotified)
-                .OnInvocation(x => x.Received().Notify(TestingConstants.ManagerId, It.IsAny<string>()));
+                .OnInvocation(x => x.DidNotReceive().Notify(TestingConstants.ManagerId, Arg.Any<string>()));
             builder
                 .RegisterSituation<IPositionRepository>(EmployeeCreationSituations.ManagerOfEmployeeIsFound)
                 .OnInvocation(x => x.GetManagerOf(TestingConstants.EmployeeId).Returns(TestingConstants.ManagerId));
 
-            //
+    
             //builder.RegisterInstance<EmployeeService, IEmployeeService>(() => new EmployeeService());
             //builder.RegisterConstructor<EmployeeCreationService>(x => x.GetConstructors()[1]);
 
