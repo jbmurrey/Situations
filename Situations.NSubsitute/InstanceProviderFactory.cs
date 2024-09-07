@@ -1,7 +1,7 @@
 ﻿using Situations.Core;
 using Situations.Core.Providers;
 
-namespace Situations.Moq
+namespace Situations.NSubsitute
 {
     internal class InstanceProviderFactory<SituationEnum> : IInstanceProviderFactory where SituationEnum : Enum
     {
@@ -14,18 +14,18 @@ namespace Situations.Moq
 
         public IInstanceProvider GetInstanceProvider()
         {
-            var registeredInstanceHandler = new RegisteredInstanceProvider(_registrations.RegisteredInstanceResolvers);
-            var moqInstanceHandler = new MoqInstanceProvider(_registrations.RegisteredInstanceResolvers);
+            var registeredInstanceProvider = new RegisteredInstanceProvider(_registrations.RegisteredInstanceResolvers);
+            var nSubstituteInstanceProvider = new NSubstituteInstanceProvider();
             var constructorProvider = new ConstructorProvider(new RegisteredConstructorProvider(_registrations.RegisteredConstructors));
             var parameterProvider = new ParameterProvider(_registrations.RegisteredInstanceResolvers, constructorProvider, this);
             var instanceProvider = new InstanceProvider(constructorProvider, parameterProvider);
 
-                registeredInstanceHandler
-                  .SetNext(moqInstanceHandler)
-                  .SetNext(instanceProvider)
-                  .SetNext(new FaultyInstanceProvider());
+            registeredInstanceProvider
+              .SetNext(nSubstituteInstanceProvider)
+              .SetNext(instanceProvider)
+              .SetNext(new FaultyInstanceProvider());
 
-            return registeredInstanceHandler;
+            return registeredInstanceProvider;
         }
     }
 }

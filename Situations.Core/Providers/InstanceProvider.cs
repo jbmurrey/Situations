@@ -1,7 +1,6 @@
 ﻿using Situations.Core.Monads;
-using Situations.Core.Providers;
 
-namespace Situations.Core.InstanceProviders
+namespace Situations.Core.Providers
 {
     public class InstanceProvider : IInstanceProvider
     {

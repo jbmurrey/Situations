@@ -1,14 +1,14 @@
 ﻿using Moq;
-using Situations.Core.InstanceProviders;
 using Situations.Core.Monads;
+using Situations.Core.Providers;
 
 namespace Situations.Moq
 {
-    internal class MoqInstanceHandler : IInstanceProvider
+    internal class MoqInstanceProvider : IInstanceProvider
     {
         private readonly Dictionary<Type, Func<object>> _registeredInstances;
 
-        public MoqInstanceHandler(Dictionary<Type, Func<object>> registeredInstances)
+        public MoqInstanceProvider(Dictionary<Type, Func<object>> registeredInstances)
         {
             _registeredInstances = registeredInstances;
         }

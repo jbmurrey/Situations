@@ -1,13 +1,12 @@
-﻿using Situations.Core.InstanceProviders;
-using Situations.Core.Monads;
+﻿using Situations.Core.Monads;
 
 namespace Situations.Core.Providers
 {
-    public class RegisteredInstanceHandler : IInstanceProvider
+    public class RegisteredInstanceProvider : IInstanceProvider
     {
         private readonly Dictionary<Type, Func<object>> _registeredInstances;
 
-        public RegisteredInstanceHandler(Dictionary<Type, Func<object>> registeredInstances)
+        public RegisteredInstanceProvider(Dictionary<Type, Func<object>> registeredInstances)
         {
             _registeredInstances = registeredInstances;
         }

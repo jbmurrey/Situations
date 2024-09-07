@@ -1,43 +1,47 @@
 ﻿using Moq;
+using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 using Situations.Core;
-using Situations.Moq;
+using Situations.NSubsitute;
+
 
 namespace Situations.Sample.Tests
 {
-    public static class SampleConfiguration
+    public static class SampleNSubstituteSituationConfiguration
     {
         public static SituationsContainer<EmployeeCreationSituations> GetSituationsContainer()
         {
-            var builder = new SituationsBuilder<EmployeeCreationSituations>();
+            var builder = new NSubstituteSituationsBuilder<EmployeeCreationSituations>();
 
             builder
                 .RegisterSituation<IPositionRepository>(EmployeeCreationSituations.RequestorIsManager)
-                .OnInvocation(mock => mock.Setup((x) => x.IsManager(TestingConstants.ManagerId)).Returns(true));
+                .OnInvocation(x => x.IsManager(TestingConstants.ManagerId).Returns(true));
             builder
                 .RegisterSituation<IPositionRepository>(EmployeeCreationSituations.RequesterIsNotManager)
-                .OnInvocation(mock => mock.Setup((x) => x.IsManager(TestingConstants.EmployeeId)).Returns(false));
+                .OnInvocation(x => x.IsManager(TestingConstants.EmployeeId).Returns(false));
             builder
                 .RegisterSituation<IEmployeeService>(EmployeeCreationSituations.EmployeeTryingToAddedDoesNotExist)
-                .OnInvocation(mock => mock.Setup((x) => x.EmployeeExist(TestingConstants.EmployeeId)).Returns(false));
+                .OnInvocation(x => x.EmployeeExist(TestingConstants.EmployeeId).Returns(false));
             builder
                 .RegisterSituation<IEmployeeService>(EmployeeCreationSituations.EmployeeTryingToBeAddedExist)
-                .OnInvocation(mock => mock.Setup((x) => x.EmployeeExist(TestingConstants.EmployeeId)).Returns(true));
+                .OnInvocation(x => x.EmployeeExist(TestingConstants.EmployeeId).Returns(true));
             builder
                 .RegisterSituation<IEmployeeService>(EmployeeCreationSituations.EmployeeWasAdded)
-                .OnInvocation(mock => mock.Verify(x => x.AddEmployee(TestingConstants.Employee), Times.Once));
+                .OnInvocation(x => x.Received().AddEmployee(TestingConstants.Employee));
             builder
                 .RegisterSituation<IEmployeeService>(EmployeeCreationSituations.EmployeeWasNotAdded)
-                .OnInvocation(mock => mock.Verify(x => x.AddEmployee(TestingConstants.Employee), Times.Never));
+                .OnInvocation(x => x.Received().AddEmployee(TestingConstants.Employee));
             builder
                 .RegisterSituation<INotificationService>(EmployeeCreationSituations.ManagerWasNotified)
-                .OnInvocation(mock => mock.Verify(x => x.Notify(TestingConstants.ManagerId, It.IsAny<string>()), Times.Once));
+                .OnInvocation(x => x.Received().Notify(TestingConstants.ManagerId, It.IsAny<string>()));
             builder
                 .RegisterSituation<INotificationService>(EmployeeCreationSituations.ManagerWasNotNotified)
-                .OnInvocation(mock => mock.Verify(x => x.Notify(TestingConstants.ManagerId, It.IsAny<string>()), Times.Never));
+                .OnInvocation(x => x.Received().Notify(TestingConstants.ManagerId, It.IsAny<string>()));
             builder
                 .RegisterSituation<IPositionRepository>(EmployeeCreationSituations.ManagerOfEmployeeIsFound)
-                .OnInvocation(mock => mock.Setup(x => x.GetManagerOf(TestingConstants.EmployeeId)).Returns(TestingConstants.ManagerId));
+                .OnInvocation(x => x.GetManagerOf(TestingConstants.EmployeeId).Returns(TestingConstants.ManagerId));
 
+            //
             //builder.RegisterInstance<EmployeeService, IEmployeeService>(() => new EmployeeService());
             //builder.RegisterConstructor<EmployeeCreationService>(x => x.GetConstructors()[1]);
 

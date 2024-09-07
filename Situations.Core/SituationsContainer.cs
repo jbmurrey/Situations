@@ -1,7 +1,6 @@
-﻿using Situations.Core;
-using Situations.Core.Providers;
+﻿using Situations.Core.Providers;
 
-namespace Situations.Moq
+namespace Situations.Core
 {
     public class SituationsContainer<SituationEnum> where SituationEnum : Enum
     {

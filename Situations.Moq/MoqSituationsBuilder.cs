@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Situations.Moq
 {
-    public class SituationsBuilder<SituationEnum> where SituationEnum : Enum
+    public class MoqSituationsBuilder<SituationEnum> where SituationEnum : Enum
     {
         private readonly Registrations<SituationEnum> _registrations = new();
 

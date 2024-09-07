@@ -1,13 +1,12 @@
-﻿using Situations.Core.Providers;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace Situations.Moq
+namespace Situations.Core.Providers
 {
-    internal class MoqConstructorProvider : IConstructorProvider
+    public class RegisteredConstructorProvider : IConstructorProvider
     {
         private readonly Dictionary<Type, Func<Type, ConstructorInfo>> _constructorProviderResolvers;
 
-        public MoqConstructorProvider(Dictionary<Type, Func<Type, ConstructorInfo>> constructorProviderResolvers)
+        public RegisteredConstructorProvider(Dictionary<Type, Func<Type, ConstructorInfo>> constructorProviderResolvers)
         {
             _constructorProviderResolvers = constructorProviderResolvers;
         }

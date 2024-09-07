@@ -3,14 +3,14 @@ using Situations.Core;
 namespace Situations.Sample.Tests
 {
     [TestClass]
-    public class SampleTest
+    public class SampleNSubstituteSituationTest
     {
         private IConfiguredService<EmployeeCreationService, EmployeeCreationSituations> _configuredService;
 
         [TestInitialize]
         public void Init()
         {
-            var situationContainer = SampleConfiguration.GetSituationsContainer();
+            var situationContainer = SampleNSubstituteSituationConfiguration.GetSituationsContainer();
             _configuredService = situationContainer.GetConfiguredService<EmployeeCreationService>();
         }
 

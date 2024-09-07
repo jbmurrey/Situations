@@ -1,7 +1,7 @@
 ﻿using Situations.Core.Exceptions;
 using Situations.Core.Monads;
 
-namespace Situations.Core.InstanceProviders
+namespace Situations.Core.Providers
 {
     public class FaultyInstanceProvider : IInstanceProvider
     {
