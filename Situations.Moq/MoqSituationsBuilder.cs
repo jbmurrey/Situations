@@ -7,8 +7,7 @@ namespace Situations.Moq
     {
         private readonly Registrations<SituationEnum> _registrations = new();
 
-        public RegisteredSituation<SituationEnum, TService> RegisterSituation<TService>(SituationEnum situation)
-            where TService : class
+        public RegisteredSituation<SituationEnum, TService> RegisterSituation<TService>(SituationEnum situation) where TService : class
         {
             var mock = MockSingletonFactory<TService>.Instance;
             var sitatuion = new RegisteredSituation<SituationEnum, TService>(situation, mock);
