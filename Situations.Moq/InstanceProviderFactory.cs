@@ -17,13 +17,12 @@ namespace Situations.Moq
             var registeredInstanceHandler = new RegisteredInstanceProvider(_registrations.RegisteredInstanceResolvers);
             var moqInstanceHandler = new MoqInstanceProvider(_registrations.RegisteredInstanceResolvers);
             var constructorProvider = new ConstructorProvider(new RegisteredConstructorProvider(_registrations.RegisteredConstructors));
-            var parameterProvider = new ParameterProvider(_registrations.RegisteredInstanceResolvers, constructorProvider, this);
-            var instanceProvider = new InstanceProvider(constructorProvider, parameterProvider);
+            var instanceProvider = new InstanceProvider(constructorProvider, this);
 
-                registeredInstanceHandler
-                  .SetNext(moqInstanceHandler)
-                  .SetNext(instanceProvider)
-                  .SetNext(new FaultyInstanceProvider());
+            registeredInstanceHandler
+              .SetNext(moqInstanceHandler)
+              .SetNext(instanceProvider)
+              .SetNext(new FaultyInstanceProvider());
 
             return registeredInstanceHandler;
         }

@@ -17,8 +17,7 @@ namespace Situations.NSubsitute
             var registeredInstanceProvider = new RegisteredInstanceProvider(_registrations.RegisteredInstanceResolvers);
             var nSubstituteInstanceProvider = new NSubstituteInstanceProvider();
             var constructorProvider = new ConstructorProvider(new RegisteredConstructorProvider(_registrations.RegisteredConstructors));
-            var parameterProvider = new ParameterProvider(_registrations.RegisteredInstanceResolvers, constructorProvider, this);
-            var instanceProvider = new InstanceProvider(constructorProvider, parameterProvider);
+            var instanceProvider = new InstanceProvider(constructorProvider, this);
 
             registeredInstanceProvider
               .SetNext(nSubstituteInstanceProvider)

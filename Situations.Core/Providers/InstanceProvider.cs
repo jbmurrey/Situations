@@ -5,12 +5,12 @@ namespace Situations.Core.Providers
     public class InstanceProvider : IInstanceProvider
     {
         private readonly IConstructorProvider _constructorProvider;
-        private readonly IParameterProvider _parameterProvider;
+        private readonly IInstanceProviderFactory _instanceProviderFactory;
 
-        public InstanceProvider(IConstructorProvider constructorProvider, IParameterProvider parameterProvider)
+        public InstanceProvider(IConstructorProvider constructorProvider, IInstanceProviderFactory parameterProvider)
         {
             _constructorProvider = constructorProvider;
-            _parameterProvider = parameterProvider;
+            _instanceProviderFactory = parameterProvider;
         }
 
         public override Result<object> TryGetInstance(Type instanceType)
@@ -22,9 +22,22 @@ namespace Situations.Core.Providers
                 if (canGetConstructor)
                 {
                     var parameters = constructorInfo!.GetParameters();
-                    var parameterInstances = _parameterProvider.GetParameters(constructorInfo).ToArray();
+                    List<object> paramaterInstances = new();
 
-                    return Result<object>.Success(constructorInfo!.Invoke(parameterInstances));
+                    foreach (var parameter in parameters)
+                    {
+                        var instanceProvider = _instanceProviderFactory.GetInstanceProvider();
+                        var instanceResult = instanceProvider.TryGetInstance(parameter.ParameterType);
+
+                        if (instanceResult.IsFailure)
+                        {
+                            return Result<object>.Failure(instanceResult.Exception!);
+                        }
+
+                        paramaterInstances.Add(instanceResult.Data!);
+                    }
+
+                    return Result<object>.Success(constructorInfo!.Invoke(paramaterInstances.ToArray()));
                 }
 
                 return _instanceProvider.TryGetInstance(instanceType);
