@@ -31,7 +31,7 @@ namespace Situations.NSubsitute
 
         public SituationsContainer<SituationEnum> Build()
         {
-            return new SituationsContainer<SituationEnum>(new InstanceProviderFactory<SituationEnum>(_registrations), _registrations);
+            return new SituationsContainer<SituationEnum>(new InstanceProviderFactory<SituationEnum>(_registrations), _registrations.RegisteredSituations);
         }
     }
 }

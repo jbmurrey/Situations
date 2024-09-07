@@ -4,13 +4,13 @@ namespace Situations.Core
 {
     public class SituationsContainer<SituationEnum> where SituationEnum : Enum
     {
-        private readonly Registrations<SituationEnum> _registrations;
+        private readonly Dictionary<SituationEnum, IRegisteredSituation<SituationEnum>> _registeredSituations;
         private readonly IInstanceProviderFactory _instanceProviderFactory;
 
-        public SituationsContainer(IInstanceProviderFactory instanceProviderFactory, Registrations<SituationEnum> registrations)
+        public SituationsContainer(IInstanceProviderFactory instanceProviderFactory, Dictionary<SituationEnum, IRegisteredSituation<SituationEnum>> registeredSituations)
         {
             _instanceProviderFactory = instanceProviderFactory;
-            _registrations = registrations;
+            _registeredSituations = registeredSituations;
         }
 
         public IConfiguredService<T, SituationEnum> GetConfiguredService<T>() where T : class
@@ -24,7 +24,7 @@ namespace Situations.Core
 
             var instance = (T)instanceResult.Data!;
 
-            return new ConfiguredService<T, SituationEnum>(instance, _registrations.RegisteredSituations);
+            return new ConfiguredService<T, SituationEnum>(instance, _registeredSituations);
         }
     }
 }
