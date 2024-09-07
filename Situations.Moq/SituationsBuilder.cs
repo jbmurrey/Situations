@@ -12,7 +12,7 @@ namespace Situations.Moq
         {
             var mock = MockSingletonFactory<TService>.Instance;
             var sitatuion = new RegisteredSituation<SituationEnum, TService>(situation, mock);
-           
+
             _registrations.RegisteredInstanceResolvers[typeof(TService)] = () => mock.Object;
             _registrations.RegisteredSituations[situation] = sitatuion;
 
@@ -29,9 +29,9 @@ namespace Situations.Moq
             _registrations.RegisteredConstructors[typeof(TService)] = constructorResolver;
         }
 
-        public ISituationsContainer<SituationEnum> Build()
+        public SituationsContainer<SituationEnum> Build()
         {
-            return new SituationsContainer<SituationEnum>(_registrations);
+            return new SituationsContainer<SituationEnum>(new InstanceProviderFactory<SituationEnum>(_registrations), _registrations);
         }
     }
 }

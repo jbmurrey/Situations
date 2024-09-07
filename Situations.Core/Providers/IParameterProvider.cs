@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-namespace Situations.Core
+namespace Situations.Core.Providers
 {
     public interface IParameterProvider
     {

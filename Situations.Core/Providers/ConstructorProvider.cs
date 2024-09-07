@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 
-namespace Situations.Core
+namespace Situations.Core.Providers
 {
-    public class DefaultConstructorProvider : IConstructorProvider
+    public class ConstructorProvider : IConstructorProvider
     {
         private readonly IConstructorProvider _constructorProvider;
 
-        public DefaultConstructorProvider(IConstructorProvider constructorProvider)
+        public ConstructorProvider(IConstructorProvider constructorProvider)
         {
             _constructorProvider = constructorProvider;
         }

@@ -1,19 +1,19 @@
 ﻿using System.Reflection;
 
-namespace Situations.Core
+namespace Situations.Core.Providers
 {
-    public class DefaultParameterProvider : IParameterProvider
+    public class ParameterProvider : IParameterProvider
     {
 
         private readonly Dictionary<Type, Func<object>> _instanceResolvers;
         private readonly IConstructorProvider _constructorProvider;
-        private readonly IInstanceProvider _instanceProvider;
+        private IInstanceProviderFactory _instanceProviderFactory;
 
-        public DefaultParameterProvider(Dictionary<Type, Func<object>> instanceResolvers, IConstructorProvider constructorProvider, IInstanceProvider instanceProvider)
+        public ParameterProvider(Dictionary<Type, Func<object>> instanceResolvers, IConstructorProvider constructorProvider, IInstanceProviderFactory instanceProviderFactory)
         {
             _instanceResolvers = instanceResolvers;
             _constructorProvider = constructorProvider;
-            _instanceProvider = new DefaultInstanceProvider(instanceProvider, constructorProvider, this);
+            _instanceProviderFactory = instanceProviderFactory;
         }
 
         public IEnumerable<object> GetParameters(ConstructorInfo constructorInfo)
@@ -36,15 +36,17 @@ namespace Situations.Core
                 }
                 else
                 {
-                    var tryGetInstanceResult = _instanceProvider.TryGetInstance(constructorParameter.ParameterType);
+                    var instanceProvider = _instanceProviderFactory!.GetInstanceProvider();
+                    var instanceResult = instanceProvider.TryGetInstance(constructorParameter.ParameterType);
 
-                    if (tryGetInstanceResult.IsSuccess)
+
+                    if (instanceResult.IsSuccess)
                     {
-                        yield return tryGetInstanceResult.Data!;
+                        yield return instanceResult.Data!;
                     }
                     else
                     {
-                        throw tryGetInstanceResult.Exception!;
+                        throw instanceResult.Exception!;
                     }
                 }
             }

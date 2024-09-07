@@ -1,20 +1,22 @@
 ﻿using Situations.Core;
+using Situations.Core.Providers;
 
 namespace Situations.Moq
 {
-    public class SituationsContainer<SituationEnum> : ISituationsContainer<SituationEnum> where SituationEnum : Enum
+    public class SituationsContainer<SituationEnum> where SituationEnum : Enum
     {
         private readonly Registrations<SituationEnum> _registrations;
+        private readonly IInstanceProviderFactory _instanceProviderFactory;
 
-        internal SituationsContainer(Registrations<SituationEnum> registrations)
+        public SituationsContainer(IInstanceProviderFactory instanceProviderFactory, Registrations<SituationEnum> registrations)
         {
+            _instanceProviderFactory = instanceProviderFactory;
             _registrations = registrations;
         }
 
         public IConfiguredService<T, SituationEnum> GetConfiguredService<T>() where T : class
         {
-            var instanceProvider = InstanceProviderFactory.GetInstanceProvider(_registrations);
-            var instanceResult = instanceProvider.TryGetInstance(typeof(T));
+            var instanceResult = _instanceProviderFactory.GetInstanceProvider().TryGetInstance(typeof(T));
 
             if (instanceResult.IsFailure)
             {

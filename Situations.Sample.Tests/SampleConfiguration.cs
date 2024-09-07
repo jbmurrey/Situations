@@ -6,7 +6,7 @@ namespace Situations.Sample.Tests
 {
     public static class SampleConfiguration
     {
-        public static ISituationsContainer<EmployeeCreationSituations> GetSituationsContainer()
+        public static SituationsContainer<EmployeeCreationSituations> GetSituationsContainer()
         {
             var builder = new SituationsBuilder<EmployeeCreationSituations>();
 

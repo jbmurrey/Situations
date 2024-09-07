@@ -1,4 +1,4 @@
-﻿namespace Situations.Core
+﻿namespace Situations.Core.Monads
 {
     public class Result<T>
     {

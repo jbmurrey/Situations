@@ -1,4 +1,4 @@
-﻿using Situations.Core;
+﻿using Situations.Core.Providers;
 using System.Reflection;
 
 namespace Situations.Moq
