@@ -1,5 +1,4 @@
-﻿using Moq;
-using NSubstitute;
+﻿using NSubstitute;
 using NSubstitute.ReceivedExtensions;
 using Situations.Core;
 using Situations.NSubsitute;
