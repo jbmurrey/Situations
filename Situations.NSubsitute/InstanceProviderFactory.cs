@@ -15,12 +15,11 @@ namespace Situations.NSubsitute
         public IInstanceProvider GetInstanceProvider()
         {
             var registeredInstanceProvider = new RegisteredInstanceProvider(_registrations.RegisteredInstanceResolvers);
-            var nSubstituteInstanceProvider = new NSubstituteInstanceProvider();
             var constructorProvider = new ConstructorProvider(new RegisteredConstructorProvider(_registrations.RegisteredConstructors));
             var instanceProvider = new InstanceProvider(constructorProvider, this);
 
             registeredInstanceProvider
-              .SetNext(nSubstituteInstanceProvider)
+              .SetNext(new NSubstituteInstanceProvider())
               .SetNext(instanceProvider)
               .SetNext(new FaultyInstanceProvider());
 

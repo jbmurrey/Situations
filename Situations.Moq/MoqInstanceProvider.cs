@@ -6,13 +6,6 @@ namespace Situations.Moq
 {
     internal class MoqInstanceProvider : IInstanceProvider
     {
-        private readonly Dictionary<Type, Func<object>> _registeredInstances;
-
-        public MoqInstanceProvider(Dictionary<Type, Func<object>> registeredInstances)
-        {
-            _registeredInstances = registeredInstances;
-        }
-
         public override Result<object> TryGetInstance(Type instanceType)
         {
             try
