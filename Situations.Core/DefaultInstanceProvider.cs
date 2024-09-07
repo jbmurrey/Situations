@@ -2,13 +2,13 @@
 
 namespace Situations.Core
 {
-    public class InstanceProvider : IInstanceProvider
+    public class DefaultInstanceProvider : IInstanceProvider
     {
         private readonly IInstanceProvider _innerHandler;
         private readonly IConstructorProvider _constructorProvider;
         private readonly IParameterProvider _parameterProvider;
 
-        public InstanceProvider(IInstanceProvider innerHandler, IConstructorProvider constructorProvider, IParameterProvider parameterProvider)
+        public DefaultInstanceProvider(IInstanceProvider innerHandler, IConstructorProvider constructorProvider, IParameterProvider parameterProvider)
         {
             _innerHandler = innerHandler;
             _constructorProvider = constructorProvider;

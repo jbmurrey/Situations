@@ -1,8 +1,7 @@
 ﻿using Situations.Core;
-using Situations.Moq;
 using System.Reflection;
 
-namespace Situations
+namespace Situations.Moq
 {
     public class SituationsBuilder<SituationEnum> where SituationEnum : Enum
     {
@@ -11,7 +10,10 @@ namespace Situations
         public RegisteredSituation<SituationEnum, TService> RegisterSituation<TService>(SituationEnum situation)
             where TService : class
         {
-            var sitatuion = new RegisteredSituation<SituationEnum, TService>(situation, MockSingletonFactory<TService>.Instance);
+            var mock = MockSingletonFactory<TService>.Instance;
+            var sitatuion = new RegisteredSituation<SituationEnum, TService>(situation, mock);
+           
+            _registrations.RegisteredInstanceResolvers[typeof(TService)] = () => mock.Object;
             _registrations.RegisteredSituations[situation] = sitatuion;
 
             return sitatuion;
@@ -19,7 +21,7 @@ namespace Situations
 
         public void RegisterInstance<TImplementation, TService>(Func<TService> instanceResolver)
         {
-            _registrations.RegisteredInstances[typeof(TService)] = () => instanceResolver()!;
+            _registrations.RegisteredInstanceResolvers[typeof(TService)] = () => instanceResolver()!;
         }
 
         public void RegisterConstructor<TService>(Func<Type, ConstructorInfo> constructorResolver)

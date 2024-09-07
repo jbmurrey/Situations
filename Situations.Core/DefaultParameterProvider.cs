@@ -13,14 +13,7 @@ namespace Situations.Core
         {
             _instanceResolvers = instanceResolvers;
             _constructorProvider = constructorProvider;
-            _instanceProvider = instanceProvider;
-        }
-
-        public DefaultParameterProvider(IInstanceProvider innerHandler, Dictionary<Type, Func<object>> instanceResolvers, IConstructorProvider constructorProvider)
-        {
-            _instanceResolvers = instanceResolvers;
-            _constructorProvider = constructorProvider;
-            _instanceProvider = new InstanceProvider(innerHandler, constructorProvider, this);
+            _instanceProvider = new DefaultInstanceProvider(instanceProvider, constructorProvider, this);
         }
 
         public IEnumerable<object> GetParameters(ConstructorInfo constructorInfo)

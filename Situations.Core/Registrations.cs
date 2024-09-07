@@ -1,18 +1,17 @@
-﻿using Situations.Core;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace Situations.Moq
+namespace Situations.Core
 {
     public class Registrations<SituationEnum> where SituationEnum : Enum
     {
         public Registrations()
         {
-            RegisteredInstances = new();
+            RegisteredInstanceResolvers = new();
             RegisteredConstructors = new();
             RegisteredSituations = new();
         }
 
-        public Dictionary<Type, Func<object>> RegisteredInstances { get; }
+        public Dictionary<Type, Func<object>> RegisteredInstanceResolvers { get; }
         public Dictionary<Type, Func<Type, ConstructorInfo>> RegisteredConstructors { get; }
         public Dictionary<SituationEnum, IRegisteredSituation<SituationEnum>> RegisteredSituations { get; }
     }

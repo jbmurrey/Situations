@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Situations.Tests", "Situations.Tests\Situations.Tests.csproj", "{08B9175C-1633-4C9F-A87D-13F305543027}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Situations.Core.Tests", "Situations.Tests\Situations.Core.Tests.csproj", "{08B9175C-1633-4C9F-A87D-13F305543027}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Situations.Moq", "Situations.Moq\Situations.Moq.csproj", "{5DDA5CA1-B028-4D24-B0BA-80DA02A1350E}"
 EndProject
@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Situations.Sample", "Situat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Situations.Core", "Situations.Core\Situations.Core.csproj", "{94130762-5BB3-4B8A-AFF7-9292B507835E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Situations.Sample.Tests", "Situations.Sample.Tests\Situations.Sample.Tests.csproj", "{B370E9D4-B5F3-4052-BAB4-5B7E2A239F83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Situations.Sample.Tests", "Situations.Sample.Tests\Situations.Sample.Tests.csproj", "{B370E9D4-B5F3-4052-BAB4-5B7E2A239F83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

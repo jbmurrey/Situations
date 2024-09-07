@@ -7,7 +7,6 @@
         public bool IsSuccess { get; }
         public bool IsFailure => !IsSuccess;
 
-
         private Result(T data)
         {
             Data = data;
@@ -17,7 +16,6 @@
         private Result(Exception exception)
         {
             Exception = exception;
-            IsSuccess = false;
         }
 
         public static Result<T> Success(T data)

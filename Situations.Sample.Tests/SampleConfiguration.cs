@@ -1,5 +1,6 @@
 ﻿using Moq;
 using Situations.Core;
+using Situations.Moq;
 
 namespace Situations.Sample.Tests
 {

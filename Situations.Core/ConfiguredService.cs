@@ -6,7 +6,7 @@ namespace Situations.Core
         where TService : class
         where SituationEnum : Enum
     {
-        Dictionary<SituationEnum, IRegisteredSituation<SituationEnum>> _situations;
+        private readonly Dictionary<SituationEnum, IRegisteredSituation<SituationEnum>> _situations;
 
         public ConfiguredService(TService instance, Dictionary<SituationEnum, IRegisteredSituation<SituationEnum>> situations)
         {
@@ -29,7 +29,7 @@ namespace Situations.Core
                 throw new UnregisteredSituationException($"{situationEnum} was not registered", ex);
             }
 
-            situation.Capture();
+            situation.Invoke();
         }
 
         public static implicit operator TService(ConfiguredService<TService, SituationEnum> instance)

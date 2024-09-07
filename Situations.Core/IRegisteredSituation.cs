@@ -6,6 +6,6 @@
         public Type RegistrationType { get; }
         SituationEnum Situation { get; }
         object Instance { get; }
-        void Capture();
+        void Invoke();
     }
 }
