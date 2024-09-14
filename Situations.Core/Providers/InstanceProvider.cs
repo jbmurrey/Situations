@@ -1,52 +1,32 @@
-﻿using Situations.Core.Monads;
+﻿using Situations.Core.Exceptions;
 
 namespace Situations.Core.Providers
 {
-    public class InstanceProvider : IInstanceProvider
+    public abstract class InstanceProvider
     {
-        private readonly IConstructorProvider _constructorProvider;
-        private readonly IInstanceProviderFactory _instanceProviderFactory;
-
-        public InstanceProvider(IConstructorProvider constructorProvider, IInstanceProviderFactory parameterProvider)
+        protected InstanceProvider? _instanceProvider;
+        public InstanceProvider SetNext(InstanceProvider instanceProvider)
         {
-            _constructorProvider = constructorProvider;
-            _instanceProviderFactory = parameterProvider;
+            _instanceProvider = instanceProvider;
+            return instanceProvider;
         }
 
-        public override Result<object> TryGetInstance(Type instanceType)
+        public virtual object GetInstance(Type instanceType)
         {
             try
             {
-                var canGetConstructor = _constructorProvider.TryGetConstructorInfo(instanceType, out var constructorInfo);
-
-                if (canGetConstructor)
+                if (_instanceProvider != null)
                 {
-                    var parameters = constructorInfo!.GetParameters();
-                    List<object> paramaterInstances = new();
-
-                    foreach (var parameter in parameters)
-                    {
-                        var instanceProvider = _instanceProviderFactory.GetInstanceProvider();
-                        var instanceResult = instanceProvider.TryGetInstance(parameter.ParameterType);
-
-                        if (instanceResult.IsFailure)
-                        {
-                            return Result<object>.Failure(instanceResult.Exception!);
-                        }
-
-                        paramaterInstances.Add(instanceResult.Data!);
-                    }
-
-                    return Result<object>.Success(constructorInfo!.Invoke(paramaterInstances.ToArray()));
+                    return _instanceProvider.GetInstance(instanceType);
                 }
 
-                return _instanceProvider.TryGetInstance(instanceType);
+                var message = $"Unable to create instance of type: {instanceType}, no suitable way of creating an instance of this class was found";
+
+                throw new InstanceCreationException(message);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not InstanceCreationException)
             {
-                {
-                    return Result<object>.Failure(ex);
-                }
+                throw new InstanceCreationException($"Unable to create instance of type: {instanceType}", ex);
             }
         }
     }

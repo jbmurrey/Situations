@@ -1,16 +1,22 @@
 ﻿using Moq;
+using Situations.Core;
+using Situations.Core.Providers;
 
 namespace Situations.Moq
 {
-    internal static class MockSingletonFactory<T> where T : class
+    internal class MockSingletonFactory<SituationEnum> where SituationEnum : Enum
     {
-        private static Mock<T>? _mockInstance;
-        public static Mock<T> Instance
+        private static MockOfTProvider<SituationEnum> _mockOfTProvider = new MockOfTProvider<SituationEnum>();
+        private static object _mockOfT;    
+
+        public static Mock<T> GetMock<T>() where T : class 
         {
-            get
-            {
-                return _mockInstance ??= new Mock<T>();
-            }
+            return (Mock<T>)_mockOfT ??= (Mock<T>)GetMockObject();
+        }
+
+        private static object GetMockObject()
+        {
+            return new _mock
         }
     }
 }

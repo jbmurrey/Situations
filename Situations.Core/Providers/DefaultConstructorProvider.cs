@@ -2,11 +2,11 @@
 
 namespace Situations.Core.Providers
 {
-    public class ConstructorProvider : IConstructorProvider
+    public class DefaultConstructorProvider : IConstructorProvider
     {
         private readonly IConstructorProvider _constructorProvider;
 
-        public ConstructorProvider(IConstructorProvider constructorProvider)
+        public DefaultConstructorProvider(IConstructorProvider constructorProvider)
         {
             _constructorProvider = constructorProvider;
         }
@@ -17,12 +17,12 @@ namespace Situations.Core.Providers
 
             try
             {
-                if (_constructorProvider.TryGetConstructorInfo(type, out constructorInfo))
+                if (_constructorProvider.TryGetConstructorInfo(type, out constructorInfo) && constructorInfo!.IsPublic)
                 {
                     return true;
                 }
 
-                var constructors = type.GetConstructors();
+                var constructors = type.GetConstructors(BindingFlags.Public);
 
                 if (constructors.Length != 0)
                 {

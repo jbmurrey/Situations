@@ -1,8 +1,6 @@
-﻿using Situations.Core.Monads;
-
-namespace Situations.Core.Providers
+﻿namespace Situations.Core.Providers
 {
-    public class RegisteredInstanceProvider : IInstanceProvider
+    public class RegisteredInstanceProvider : InstanceProvider
     {
         private readonly Dictionary<Type, Func<object>> _registeredInstances;
 
@@ -11,21 +9,14 @@ namespace Situations.Core.Providers
             _registeredInstances = registeredInstances;
         }
 
-        public override Result<object> TryGetInstance(Type instanceType)
+        public override object GetInstance(Type instanceType)
         {
-            try
+            if (_registeredInstances.TryGetValue(instanceType, out var instanceResolver))
             {
-                if (_registeredInstances.TryGetValue(instanceType, out var instanceResolver))
-                {
-                    return Result<object>.Success(instanceResolver());
-                }
+                return instanceResolver();
+            }
 
-                return _instanceProvider.TryGetInstance(instanceType);
-            }
-            catch (Exception ex)
-            {
-                return Result<object>.Failure(ex);
-            }
+            return base.GetInstance(instanceType);
         }
     }
 }

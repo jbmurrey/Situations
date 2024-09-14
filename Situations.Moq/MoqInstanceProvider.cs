@@ -1,29 +1,46 @@
 ﻿using Moq;
-using Situations.Core.Monads;
 using Situations.Core.Providers;
 
 namespace Situations.Moq
 {
-    internal class MoqInstanceProvider : IInstanceProvider
+    internal class MoqInstanceProvider : InstanceProvider
     {
-        public override Result<object> TryGetInstance(Type instanceType)
-        {
-            try
-            {
-                if (instanceType.IsAbstract || instanceType.IsInterface)
-                {
-                    var mockType = typeof(Mock<>).MakeGenericType(instanceType);
-                    dynamic mockObject = Activator.CreateInstance(mockType)!;
+        private readonly IConstructorProvider _constructorProvider;
+        private readonly IInstanceProviderFactory _instanceProviderFactory;
 
-                    return Result<object>.Success(mockObject.Object);
+        public MoqInstanceProvider(IConstructorProvider constructorProvider, IInstanceProviderFactory instanceProviderFactory)
+        {
+            _constructorProvider = constructorProvider;
+            _instanceProviderFactory = instanceProviderFactory;
+        }
+
+        public override object GetInstance(Type instanceType)
+        {
+            if (_constructorProvider.TryGetConstructorInfo(instanceType, out var constructorInfo))
+            {
+                var parameters = constructorInfo!.GetParameters();
+                List<object> parameterInstances = new();
+
+                foreach (var parameter in parameters)
+                {
+                    var instanceProvider = _instanceProviderFactory.GetInstanceProvider();
+                    parameterInstances.Add(instanceProvider.GetInstance(parameter.ParameterType));
                 }
 
-                return _instanceProvider.TryGetInstance(instanceType);
+                var mockType = typeof(Mock<>).MakeGenericType(instanceType);
+                dynamic mockObject = Activator.CreateInstance(mockType, parameterInstances)!;
+
+                return mockObject.Object;
             }
-            catch (Exception ex)
+            else if (instanceType.IsInterface)
             {
-                return Result<object>.Failure(ex);
+                var mockType = typeof(Mock<>).MakeGenericType(instanceType);
+                dynamic mockObject = Activator.CreateInstance(mockType)!;
+
+                return mockObject.Object;
             }
+
+            return base.GetInstance(instanceType);
         }
     }
 }

@@ -12,18 +12,16 @@ namespace Situations.Moq
             _registrations = registrations;
         }
 
-        public IInstanceProvider GetInstanceProvider()
+        public InstanceProvider GetInstanceProvider()
         {
-            var registeredInstanceHandler = new RegisteredInstanceProvider(_registrations.RegisteredInstanceResolvers);
-            var constructorProvider = new ConstructorProvider(new RegisteredConstructorProvider(_registrations.RegisteredConstructors));
-            var instanceProvider = new InstanceProvider(constructorProvider, this);
+            var registeredInstanceProvider = new RegisteredInstanceProvider(_registrations.RegisteredInstanceResolvers);
+            var constructorProvider = new DefaultConstructorProvider(new RegisteredConstructorProvider(_registrations.RegisteredConstructors));
 
-            registeredInstanceHandler
-              .SetNext(new MoqInstanceProvider())
-              .SetNext(instanceProvider)
-              .SetNext(new FaultyInstanceProvider());
+            registeredInstanceProvider
+              .SetNext(new MoqInstanceProvider(constructorProvider, this))
+              .SetNext(new UninitiliazedObjectProvider());
 
-            return registeredInstanceHandler;
+            return registeredInstanceProvider;
         }
     }
 }

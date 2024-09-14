@@ -2,6 +2,6 @@
 {
     public interface IInstanceProviderFactory
     {
-        IInstanceProvider GetInstanceProvider();
+        InstanceProvider GetInstanceProvider();
     }
 }

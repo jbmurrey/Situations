@@ -12,16 +12,15 @@ namespace Situations.NSubsitute
             _registrations = registrations;
         }
 
-        public IInstanceProvider GetInstanceProvider()
+        public InstanceProvider GetInstanceProvider()
         {
             var registeredInstanceProvider = new RegisteredInstanceProvider(_registrations.RegisteredInstanceResolvers);
-            var constructorProvider = new ConstructorProvider(new RegisteredConstructorProvider(_registrations.RegisteredConstructors));
-            var instanceProvider = new InstanceProvider(constructorProvider, this);
+            var constructorProvider = new DefaultConstructorProvider(new RegisteredConstructorProvider(_registrations.RegisteredConstructors));
 
             registeredInstanceProvider
               .SetNext(new NSubstituteInstanceProvider())
-              .SetNext(instanceProvider)
-              .SetNext(new FaultyInstanceProvider());
+              .SetNext(new DefaultInstanceProvider(constructorProvider, this))
+              .SetNext(new UninitiliazedObjectProvider());
 
             return registeredInstanceProvider;
         }

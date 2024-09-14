@@ -13,18 +13,12 @@ namespace Situations.Core
             _registeredSituations = registeredSituations;
         }
 
-        public IConfiguredService<T, SituationEnum> GetConfiguredService<T>() where T : class
+        public IConfiguredService<TService, SituationEnum> GetConfiguredService<TService>() where TService : class
         {
-            var instanceResult = _instanceProviderFactory.GetInstanceProvider().TryGetInstance(typeof(T));
+            var instanceProvider = _instanceProviderFactory.GetInstanceProvider();
+            var instance = (TService)instanceProvider.GetInstance(typeof(TService));
 
-            if (instanceResult.IsFailure)
-            {
-                throw instanceResult.Exception!;
-            }
-
-            var instance = (T)instanceResult.Data!;
-
-            return new ConfiguredService<T, SituationEnum>(instance, _registeredSituations);
+            return new ConfiguredService<TService, SituationEnum>(instance, _registeredSituations);
         }
     }
 }
