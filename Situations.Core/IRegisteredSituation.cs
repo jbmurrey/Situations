@@ -1,6 +1,6 @@
 ﻿namespace Situations.Core
 {
-    public interface IRegisteredSituation<SituationEnum, Service, Action>
+    public interface IRegisteredSituation<SituationEnum>
         where SituationEnum : Enum
     {
         public Type RegistrationType { get; }
